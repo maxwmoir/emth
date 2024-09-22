@@ -47,29 +47,25 @@ def plot_discs(A, lsr, lsc, eigens = None, ests = None):
 def R(y, x):
     return np.dot(y, x) / np.dot(x, x)
 
-def IPM(A, x, k):
+def IPM(A, x):
     (PT, L, U) = la.lu(A)
-    
-    for n in range(k):
-
+    lastm = 0
+    m = 100000
+    while (abs(m - lastm) / abs(m) >= 10 ** (-8)):
         lastx = x
         z = np.linalg.solve(L, PT @ x)
         y = np.linalg.solve(U, z)
         x = y / np.linalg.norm(y, float('inf'))
+        lastm = m
         m = R(y, lastx)
-        # print(n, y, x, m)
         
-    return lastx, y, m
+    return m
 
 def shifted_IPM(A, guesses, x):
     ests = []
     for q in guesses:
         B = A - np.identity(len(A)) * q
-
-
-        (nx, y , m) = IPM(B, x, 50)
-
-
+        m = IPM(B, x, )
         l = q + 1/ m
         ests.append(l)
     return ests
@@ -85,10 +81,7 @@ def a(A):
 
     x = np.array([1, 0, 1, 1])
     ests = shifted_IPM(A, guesses, x)
-    print()
-    print(ests)
-    eigs = [-3.609220290413334 - 0.984991312241698j, 1.981433787001914+0.48455676707267j, 4.785892579025826-0.184371722542448j, 5.341893924385594+0.184806267711476j]
-    # eigs = np.linalg.eig(A)
+    eigs = np.linalg.eigvals(A)
     plot_discs(A, row_discs, col_discs, ests, eigs)
 
 
@@ -104,4 +97,3 @@ if __name__ == "__main__":
 
 
     a(A)
-
