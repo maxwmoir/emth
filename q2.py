@@ -16,7 +16,7 @@ for n in sizes:
     B = la.inv(A)
     t1 = time.time()
     times.append(t1 - t0)
-    theo.append((59.7 * 10**-12) * (2/3 * n**3 + 2*n**2))
+    theo.append((33.8 * 10**-12) * (2/3 * n**3 + 2*n**2))
 
 plt.plot(sizes, times, 'b')
 plt.plot(sizes, theo, 'go')
